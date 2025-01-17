@@ -33,8 +33,8 @@ example_game_state = {
         "y": 310,
     },
     "players": {
-        1: {"x": 120, "y": 250, "score": 2},
-        2: {"x": 680, "y": 350, "score": 3}
+        1: {"x": 120, "y": 250, "score": 2}, # change 1 to me (me as blue color on the bottom)
+        2: {"x": 680, "y": 350, "score": 3} # change 2 to opponent (opponent as red on the top)
     },
     "time": 45.6,
     "game_over": False
