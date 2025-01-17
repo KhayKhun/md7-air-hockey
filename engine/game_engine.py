@@ -1,17 +1,12 @@
 import time
 import threading
 import random
+import sys
+import os
 
-# Global Constants
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-PUCK_RADIUS = 20
-PUCK_SPEED = 5
-PLAYER_INITIAL_X = {1: 100, 2: 700}
-PLAYER_INITIAL_Y = SCREEN_HEIGHT // 2
-WINNING_SCORE = 5
-GOAL_WIDTH = 200
-GOAL_Y_RANGE = ((SCREEN_HEIGHT - GOAL_WIDTH) // 2, (SCREEN_HEIGHT + GOAL_WIDTH) // 2)
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from shared.game_config import SCREEN_WIDTH, SCREEN_HEIGHT, PUCK_RADIUS, PUCK_SPEED, PLAYER_INITIAL_X, PLAYER_INITIAL_Y, WINNING_SCORE, GOAL_WIDTH, GOAL_Y_RANGE
+
 
 class GameEngine:
     def __init__(self, winning_score=WINNING_SCORE):
