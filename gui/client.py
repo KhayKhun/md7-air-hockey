@@ -1,6 +1,7 @@
 import pygame
 import sys
 import os
+import random
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from shared.game_config import SCREEN_WIDTH, SCREEN_HEIGHT, PUCK_RADIUS, PUCK_SPEED, PLAYER_INITIAL_X, PLAYER_INITIAL_Y, WINNING_SCORE, GOAL_WIDTH, GOAL_Y_RANGE
@@ -50,6 +51,14 @@ class Puck:
     
     def draw(self):
         pygame.draw.circle(screen, WHITE, (int(self.x), int(self.y)), self.radius)
+    
+    def _mock_update(self):
+        self.x += example_game_state["puck"]["dx"]
+        self.y += example_game_state["puck"]["dy"]
+        if self.x <= PUCK_RADIUS or self.x >= SCREEN_WIDTH - PUCK_RADIUS:
+            example_game_state["puck"]["dx"] *= -1
+        if self.y <= PUCK_RADIUS or self.y >= SCREEN_HEIGHT - PUCK_RADIUS:
+            example_game_state["puck"]["dy"] *= -1
 
 class Handie:
     def __init__(self, x, y, color):
@@ -65,6 +74,12 @@ class Handie:
         self.x = new_x
         self.y = new_y
         print(f"{self.color} player moved to ({self.x}, {self.y})")
+    
+    def _mock_move(self):
+        self.x += random.randint(-5, 5)
+        self.y += random.randint(-5, 5)
+        self.x = max(self.radius, min(SCREEN_WIDTH - self.radius, self.x))
+        self.y = max(self.radius, min(SCREEN_HEIGHT - self.radius, self.y))
 
 # Initialize game objects
 puck = Puck(example_game_state["puck"]["x"], example_game_state["puck"]["y"], example_game_state["puck"]["radius"])
@@ -92,6 +107,10 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+    
+    puck._mock_update()
+    player1._mock_move()
+    player2._mock_move()
     
     mouse_x, mouse_y = pygame.mouse.get_pos()
     if mouse_y < SCREEN_HEIGHT // 2:
