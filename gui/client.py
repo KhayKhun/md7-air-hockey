@@ -1,13 +1,18 @@
 import pygame
 import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from shared.game_config import SCREEN_WIDTH, SCREEN_HEIGHT, PUCK_RADIUS, PUCK_SPEED, PLAYER_INITIAL_X, PLAYER_INITIAL_Y, WINNING_SCORE, GOAL_WIDTH, GOAL_Y_RANGE
+
 
 # Initialize Pygame
 pygame.init()
 
 # Screen Dimensions
-WIDTH = 800
-HEIGHT = 600
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Air Hockey Game")
 
 # Colors
@@ -50,7 +55,7 @@ class Handie:
     def __init__(self, x, y, color):
         self.x = x
         self.y = y
-        self.radius = 30
+        self.radius = PUCK_RADIUS
         self.color = color
     
     def draw(self):
@@ -68,10 +73,10 @@ player2 = Handie(example_game_state["players"][2]["x"], example_game_state["play
 
 def draw():
     screen.fill(BLACK)
-    pygame.draw.line(screen, WHITE, (0, HEIGHT // 2), (WIDTH, HEIGHT // 2), 2)
-    pygame.draw.circle(screen, WHITE, (WIDTH // 2, HEIGHT // 2), 50, 2)
-    pygame.draw.rect(screen, RED, (WIDTH // 3, 0, WIDTH // 3, 10))
-    pygame.draw.rect(screen, BLUE, (WIDTH // 3, HEIGHT - 10, WIDTH // 3, 10))
+    pygame.draw.line(screen, WHITE, (0, SCREEN_HEIGHT // 2), (SCREEN_WIDTH, SCREEN_HEIGHT // 2), 2)
+    pygame.draw.circle(screen, WHITE, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2), 50, 2)
+    pygame.draw.rect(screen, RED, (SCREEN_WIDTH // 3, 0, SCREEN_WIDTH // 3, 10))
+    pygame.draw.rect(screen, BLUE, (SCREEN_WIDTH // 3, SCREEN_HEIGHT - 10, SCREEN_WIDTH // 3, 10))
     
     puck.draw()
     player1.draw()
@@ -80,7 +85,7 @@ def draw():
     player1_text = font.render(f"Player 1: {example_game_state['players'][1]['score']}", True, WHITE)
     player2_text = font.render(f"Player 2: {example_game_state['players'][2]['score']}", True, WHITE)
     screen.blit(player1_text, (20, 20))
-    screen.blit(player2_text, (20, HEIGHT - 40))
+    screen.blit(player2_text, (20, SCREEN_HEIGHT - 40))
 
 running = True
 while running:
@@ -89,7 +94,7 @@ while running:
             running = False
     
     mouse_x, mouse_y = pygame.mouse.get_pos()
-    if mouse_y < HEIGHT // 2:
+    if mouse_y < SCREEN_HEIGHT // 2:
         player1.move(mouse_x, mouse_y)
     else:
         player2.move(mouse_x, mouse_y)
