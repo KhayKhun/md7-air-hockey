@@ -31,9 +31,6 @@ example_game_state = {
     "puck": {
         "x": 420,
         "y": 310,
-        "dx": 5,
-        "dy": -5,
-        "radius": 15
     },
     "players": {
         1: {"x": 120, "y": 250, "score": 2},
