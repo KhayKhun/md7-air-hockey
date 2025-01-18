@@ -76,7 +76,7 @@ class GameEngine:
             "game_over": self.game_over
         }
 
-    def set_player_position(self, player, x, y):
+    def set_player_mouse_position(self, player, x, y):
         self.players[player]["x"], self.players[player]["y"] = x, y
         print(f"Player {player} moved to: ({x}, {y})")
     
@@ -85,7 +85,7 @@ class GameEngine:
             for player in self.players:
                 new_x = random.randint(0, SCREEN_WIDTH // 2) if player == 1 else random.randint(SCREEN_WIDTH // 2, SCREEN_WIDTH)
                 new_y = random.randint(0, SCREEN_HEIGHT)
-                self.set_player_position(player, new_x, new_y)
+                self.set_player_mouse_position(player, new_x, new_y)
             time.sleep(0.1)
 
     def run_game_loop(self):
