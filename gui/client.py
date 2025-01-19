@@ -1,18 +1,14 @@
 import pygame
 import sys
 import os
-import random
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from shared.game_config import SCREEN_WIDTH, SCREEN_HEIGHT, PUCK_RADIUS, PUCK_SPEED, PLAYER_INITIAL_X, PLAYER_INITIAL_Y, WINNING_SCORE, GOAL_WIDTH, GOAL_Y_RANGE
-
+from shared.game_config import SCREEN_WIDTH, SCREEN_HEIGHT, PUCK_RADIUS
 
 # Initialize Pygame
 pygame.init()
 
-# Screen Dimensions
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+# Screen Setup
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Air Hockey Game")
 
@@ -33,89 +29,94 @@ example_game_state = {
         "y": 310,
     },
     "players": {
-        1: {"x": 120, "y": 250, "score": 2}, # change 1 to me (me as blue color on the bottom)
-        2: {"x": 680, "y": 350, "score": 3} # change 2 to opponent (opponent as red on the top)
+        "me": {"x": 120, "y": 250, "score": 2, "quit" : False},
+        "opponent": {"x": 680, "y": 50, "score": 3, "quit" : False}
     },
     "time": 45.6,
     "game_over": False
 }
 
+# Data Storage Classes
 class Puck:
     def __init__(self, x, y, radius):
         self.x = x
         self.y = y
         self.radius = radius
-    
-    def draw(self):
-        pygame.draw.circle(screen, WHITE, (int(self.x), int(self.y)), self.radius)
-    
-    def _mock_update(self):
-        self.x += example_game_state["puck"]["dx"]
-        self.y += example_game_state["puck"]["dy"]
-        if self.x <= PUCK_RADIUS or self.x >= SCREEN_WIDTH - PUCK_RADIUS:
-            example_game_state["puck"]["dx"] *= -1
-        if self.y <= PUCK_RADIUS or self.y >= SCREEN_HEIGHT - PUCK_RADIUS:
-            example_game_state["puck"]["dy"] *= -1
 
-class Handie:
+class Player:
     def __init__(self, x, y, color):
         self.x = x
         self.y = y
         self.radius = PUCK_RADIUS
         self.color = color
     
-    def draw(self):
-        pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), self.radius)
-    
-    def move(self, new_x, new_y):
+    def mouse_move(self, new_x, new_y): # sed the mouse coordinates to server
+        self.apply_inertia(new_x, new_y)
+        
+        print(f"{self.color} player moved to ({self.x}, {self.y})")
+
+    def apply_inertia(self, target_x, target_y):
+        """ Move the handie gradually towards the target position. """
+        speed = 5  # Adjust speed for inertia effect
+        current_x, current_y = self.x, self.y
+
+        dx, dy = target_x - current_x, target_y - current_y
+        distance = (dx**2 + dy**2) ** 0.5
+
+        if distance > speed:
+            ratio = speed / distance # 1/time
+            new_x, new_y = current_x + dx * ratio, current_y + dy * ratio
+        else:
+            new_x, new_y = target_x, target_y
+
         self.x = new_x
         self.y = new_y
-        print(f"{self.color} player moved to ({self.x}, {self.y})")
-    
-    def _mock_move(self):
-        self.x += random.randint(-5, 5)
-        self.y += random.randint(-5, 5)
-        self.x = max(self.radius, min(SCREEN_WIDTH - self.radius, self.x))
-        self.y = max(self.radius, min(SCREEN_HEIGHT - self.radius, self.y))
 
 # Initialize game objects
-puck = Puck(example_game_state["puck"]["x"], example_game_state["puck"]["y"], example_game_state["puck"]["radius"])
-player1 = Handie(example_game_state["players"][1]["x"], example_game_state["players"][1]["y"], RED)
-player2 = Handie(example_game_state["players"][2]["x"], example_game_state["players"][2]["y"], BLUE)
+puck = Puck(example_game_state["puck"]["x"], example_game_state["puck"]["y"], PUCK_RADIUS)
+player_me = Player(example_game_state["players"]["me"]["x"], example_game_state["players"]["me"]["y"], BLUE)
+player_opponent = Player(example_game_state["players"]["opponent"]["x"], example_game_state["players"]["opponent"]["y"], RED)
 
-def draw():
+# Drawing Functions
+def draw_puck(puck):
+    pygame.draw.circle(screen, WHITE, (int(puck.x), int(puck.y)), puck.radius)
+
+def draw_player(player):
+    pygame.draw.circle(screen, player.color, (int(player.x), int(player.y)), player.radius)
+
+def draw_game():
     screen.fill(BLACK)
     pygame.draw.line(screen, WHITE, (0, SCREEN_HEIGHT // 2), (SCREEN_WIDTH, SCREEN_HEIGHT // 2), 2)
     pygame.draw.circle(screen, WHITE, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2), 50, 2)
     pygame.draw.rect(screen, RED, (SCREEN_WIDTH // 3, 0, SCREEN_WIDTH // 3, 10))
     pygame.draw.rect(screen, BLUE, (SCREEN_WIDTH // 3, SCREEN_HEIGHT - 10, SCREEN_WIDTH // 3, 10))
     
-    puck.draw()
-    player1.draw()
-    player2.draw()
+    draw_puck(puck)
+    draw_player(player_me)
+    draw_player(player_opponent)
     
-    player1_text = font.render(f"Player 1: {example_game_state['players'][1]['score']}", True, WHITE)
-    player2_text = font.render(f"Player 2: {example_game_state['players'][2]['score']}", True, WHITE)
-    screen.blit(player1_text, (20, 20))
-    screen.blit(player2_text, (20, SCREEN_HEIGHT - 40))
+    player_me_text = font.render(f"Player (You): {example_game_state['players']['me']['score']}", True, WHITE)
+    player_opponent_text = font.render(f"Opponent: {example_game_state['players']['opponent']['score']}", True, WHITE)
+    screen.blit(player_me_text, (20, 20))
+    screen.blit(player_opponent_text, (20, SCREEN_HEIGHT - 40))
 
+# Game Loop
 running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
     
-    puck._mock_update()
-    player1._mock_move()
-    player2._mock_move()
-    
     mouse_x, mouse_y = pygame.mouse.get_pos()
-    if mouse_y < SCREEN_HEIGHT // 2:
-        player1.move(mouse_x, mouse_y)
-    else:
-        player2.move(mouse_x, mouse_y)
     
-    draw()
+    # Restrict player movement to their half of the screen
+    if mouse_y >= SCREEN_HEIGHT // 2:
+        player_me.mouse_move(mouse_x, mouse_y)
+    
+    # Opponent follows predefined state (simulated movement)
+    player_opponent.mouse_move(example_game_state["players"]["opponent"]["x"], example_game_state["players"]["opponent"]["y"])
+    
+    draw_game()
     pygame.display.flip()
     clock.tick(60)
 
