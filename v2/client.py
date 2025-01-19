@@ -107,6 +107,8 @@ def draw_game():
     print(game_state['puck'])
     if(player_id == 2):
         print("Player 2", game_state['players']['me']['x'], game_state['players']['me']['y'])
+    else:
+        print("opponent", game_state['players']['opponent']['x'], game_state['players']['opponent']['y'])
     # Draw arena elements
     pygame.draw.line(screen, WHITE, (0, SCREEN_HEIGHT // 2), (SCREEN_WIDTH, SCREEN_HEIGHT // 2), 2)
     pygame.draw.circle(screen, WHITE, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2), 50, 2)

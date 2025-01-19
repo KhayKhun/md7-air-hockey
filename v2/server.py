@@ -6,7 +6,7 @@ import os
 import time
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from engine.v2_game_engine import GameEngine
+from v2.game_engine import GameEngine
 from shared.game_config import SCREEN_WIDTH, SCREEN_HEIGHT
 
 
@@ -93,7 +93,10 @@ def send_game_state():
         if player_id == 2:  # Mirror for Player 2
             puck_x = SCREEN_WIDTH - puck_x  # Left-right inversion
             puck_y = SCREEN_HEIGHT - puck_y  # Flip y-position
-
+        print('Player 1:', game_state["players"][1]['x'], game_state["players"][1]['y'])
+        print('Player 2:', game_state["players"][2]['x'], game_state["players"][2]['y'])
+        print('Puck:', game_state["puck"]["x"], game_state["puck"]["y"])
+        print("##################")
         # Send transformed game state
         state_for_client = {
             "puck": {"x": puck_x, "y": puck_y},  # Send adjusted puck position

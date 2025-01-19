@@ -40,6 +40,18 @@ class GameEngine:
                 print("---------------------")
 
 
+    def _check_collision(self, handie_x, handie_y, player_id):
+        """ Checks if the puck collides with a player's handie. """
+        
+        # ✅ If Player 2, FLIP THE PUCK POSITION instead of flipping the paddle
+        puck_x, puck_y = self.puck["x"], self.puck["y"]
+        if player_id == 2:
+            puck_x = SCREEN_WIDTH - puck_x
+            puck_y = SCREEN_HEIGHT - puck_y
+
+        return abs(puck_x - handie_x) < PUCK_RADIUS and abs(puck_y - handie_y) < PUCK_RADIUS
+
+
     def _check_bounce_borders(self):
         if self.puck["y"] <= PUCK_RADIUS:  # Top border
                 self.puck["dy"] *= -1  # Bounce off the top
@@ -73,16 +85,6 @@ class GameEngine:
                 self.update_score(1)  # Player 1 scores
             else:
                 self.puck["dy"] *= -1  # Bounce off the bottom
-
-    def _check_collision(self, handie_x, handie_y, player_id):
-        """ Checks if the puck collides with a player's handie. """
-        
-        # **If Player 2, mirror the handie coordinates back to the normal system**
-        if player_id == 2:
-            handie_x = SCREEN_WIDTH - handie_x  # Flip X
-            handie_y = SCREEN_HEIGHT - handie_y  # Flip Y
-
-        return abs(self.puck["x"] - handie_x) < PUCK_RADIUS and abs(self.puck["y"] - handie_y) < PUCK_RADIUS
 
     def update_score(self, player):
         self.players[player]["score"] += 1
