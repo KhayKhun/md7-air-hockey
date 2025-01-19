@@ -5,7 +5,6 @@ import time
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from shared.game_config import SCREEN_WIDTH, SCREEN_HEIGHT, PUCK_RADIUS, PUCK_SPEED, PLAYER_INITIAL_X, PLAYER_INITIAL_Y, WINNING_SCORE, GOAL_X_RANGE
 
-
 class GameEngine:
     def __init__(self, winning_score=WINNING_SCORE):
         self.puck = {"x": SCREEN_WIDTH // 2, "y": SCREEN_HEIGHT // 2, "dx": PUCK_SPEED, "dy": PUCK_SPEED}
@@ -60,13 +59,13 @@ class GameEngine:
     def _check_goals(self):
         if self.puck["y"] <= PUCK_RADIUS:  # Top goal
             if GOAL_X_RANGE[0] <= self.puck["x"] <= GOAL_X_RANGE[1]:  # Check if within goal width
-                self.update_score(2)  # Player 2 scores
+                self.update_score(1)  # Player 2 scores
             else:
                 self.puck["dy"] *= -1  # Bounce off the top
 
         elif self.puck["y"] >= SCREEN_HEIGHT - PUCK_RADIUS:  # Bottom goal
             if GOAL_X_RANGE[0] <= self.puck["x"] <= GOAL_X_RANGE[1]:  # Check if within goal width
-                self.update_score(1)  # Player 1 scores
+                self.update_score(2)  # Player 1 scores
             else:
                 self.puck["dy"] *= -1  # Bounce off the bottom
 

@@ -39,7 +39,7 @@ def send_mouse_position():
 
     while True:
         if player_id is not None:
-            mouse_x, mouse_y = pygame.mouse.get_pos()
+            mouse_x, mouse_y = get_mouse_position()
 
             # Restrict movement to bottom half (regardless of player_id)
             mouse_y = max(SCREEN_HEIGHT // 2, mouse_y)
@@ -51,7 +51,16 @@ def send_mouse_position():
                 print("Lost connection to server.")
                 break
 
-        pygame.time.delay(10)  # Limit update rate
+        render_delay(10)  # Limit update rate
+
+def render_delay(n):
+        pygame.time.delay(n)  # Limit update rate
+    
+
+def get_mouse_position():
+    """ Tracks mouse position and sends it to the server, restricting movement based on player ID. """
+    mouse_x, mouse_y = pygame.mouse.get_pos()
+    return mouse_x, mouse_y
 
 def receive_game_state():
     """ Continuously receives and updates the game state from the server. """
