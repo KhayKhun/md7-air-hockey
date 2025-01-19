@@ -31,19 +31,16 @@ class GameEngine:
         self._check_goals()
         self._check_bounce_borders()
 
-        # ✅ Check for collision with both players
+        # Check for collision with both players
         for player, data in self.players.items():
             if self._check_collision(data["x"], data["y"], player):  # Pass `player` to fix for Player 2
                 self.puck["dy"] *= -1  # Reverse puck direction
-                print("---------------------")
-                print(f"Puck collided with Player {player}")
-                print("---------------------")
 
 
     def _check_collision(self, handie_x, handie_y, player_id):
         """ Checks if the puck collides with a player's handie. """
         
-        # ✅ If Player 2, FLIP THE PUCK POSITION instead of flipping the paddle
+        # If Player 2, FLIP THE PUCK POSITION instead of flipping the paddle
         puck_x, puck_y = self.puck["x"], self.puck["y"]
         if player_id == 2:
             puck_x = SCREEN_WIDTH - puck_x
@@ -61,27 +58,16 @@ class GameEngine:
         # Bounce off left and right walls
         if self.puck["x"] <= PUCK_RADIUS or self.puck["x"] >= SCREEN_WIDTH - PUCK_RADIUS:
             self.puck["dx"] *= -1
-            print("---------------------")
-            print("Puck bounced off wall")
-            print("---------------------")
-        
-
 
     def _check_goals(self):
         if self.puck["y"] <= PUCK_RADIUS:  # Top goal
             if GOAL_X_RANGE[0] <= self.puck["x"] <= GOAL_X_RANGE[1]:  # Check if within goal width
-                print("---------------------")
-                print("Player 2 scores!")
-                print("---------------------")
                 self.update_score(2)  # Player 2 scores
             else:
                 self.puck["dy"] *= -1  # Bounce off the top
 
         elif self.puck["y"] >= SCREEN_HEIGHT - PUCK_RADIUS:  # Bottom goal
             if GOAL_X_RANGE[0] <= self.puck["x"] <= GOAL_X_RANGE[1]:  # Check if within goal width
-                print("---------------------")
-                print("Player 1 scores!")
-                print("---------------------")
                 self.update_score(1)  # Player 1 scores
             else:
                 self.puck["dy"] *= -1  # Bounce off the bottom

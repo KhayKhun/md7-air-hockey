@@ -53,9 +53,6 @@ def send_mouse_position():
 
         pygame.time.delay(10)  # Limit update rate
 
-
-
-
 def receive_game_state():
     """ Continuously receives and updates the game state from the server. """
     global client_socket, player_id, game_state
@@ -93,9 +90,9 @@ def draw_winner():
         text_rect = winner_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
         screen.blit(winner_text, text_rect)
         pygame.display.flip()
-        time.sleep(3)  # Pause for 3 seconds before quitting
-        pygame.quit()
-        sys.exit()
+        # time.sleep(3)  # Pause for 3 seconds before quitting
+        # pygame.quit()
+        # sys.exit()
 
 def draw_game():
     """ Renders the game state received from the server, including puck movement. """
@@ -104,18 +101,14 @@ def draw_game():
     if game_state is None:
         pygame.display.flip()
         return  # Skip rendering if no game state
-    print(game_state['puck'])
-    if(player_id == 2):
-        print("Player 2", game_state['players']['me']['x'], game_state['players']['me']['y'])
-    else:
-        print("opponent", game_state['players']['opponent']['x'], game_state['players']['opponent']['y'])
+
     # Draw arena elements
     pygame.draw.line(screen, WHITE, (0, SCREEN_HEIGHT // 2), (SCREEN_WIDTH, SCREEN_HEIGHT // 2), 2)
     pygame.draw.circle(screen, WHITE, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2), 50, 2)
     pygame.draw.rect(screen, RED, (SCREEN_WIDTH // 3, 0, SCREEN_WIDTH // 3, 10))  # Red goal (Top)
     pygame.draw.rect(screen, BLUE, (SCREEN_WIDTH // 3, SCREEN_HEIGHT - 10, SCREEN_WIDTH // 3, 10))  # Blue goal (Bottom)
 
-    # ✅ **Draw puck using server's updated position**
+    #  Draw puck
     puck_x = int(game_state['puck']['x'])
     puck_y = int(game_state['puck']['y'])
     pygame.draw.circle(screen, WHITE, (puck_x, puck_y), PUCK_RADIUS)
@@ -126,7 +119,6 @@ def draw_game():
 
     # Flip opponent's Y-position to match POV (opponent should always be at the top)
     opponent_y = SCREEN_HEIGHT - opponent_y
-
     # Mirror opponent’s movement (left-right inversion)
     opponent_x = SCREEN_WIDTH - opponent_x
 
@@ -164,7 +156,6 @@ def start_client():
 
 
 def run_game():
-    """ Runs the Pygame loop and handles rendering. """
     running = True
     while running:
         for event in pygame.event.get():

@@ -31,7 +31,7 @@ def handle_client(client_socket, addr):  # Own thread
     initial_state = game.get_state()
     # Include player ID in first message
     initial_state["player_id"] = player_number
-    print(initial_state)
+    # Conver 1 and 2, to me and opponent
     initial_state["players"] = {
         "me": initial_state["players"][player_number],
         "opponent": initial_state["players"][2 if player_number == 1 else 1]
@@ -42,7 +42,7 @@ def handle_client(client_socket, addr):  # Own thread
     buffer = ""
 
     try:
-        while True:
+        while True: # Listening to client
             data = client_socket.recv(1024).decode()
             if not data:
                 print("Client disconnected:", addr)
@@ -93,10 +93,12 @@ def send_game_state():
         if player_id == 2:  # Mirror for Player 2
             puck_x = SCREEN_WIDTH - puck_x  # Left-right inversion
             puck_y = SCREEN_HEIGHT - puck_y  # Flip y-position
-        print('Player 1:', game_state["players"][1]['x'], game_state["players"][1]['y'])
-        print('Player 2:', game_state["players"][2]['x'], game_state["players"][2]['y'])
-        print('Puck:', game_state["puck"]["x"], game_state["puck"]["y"])
-        print("##################")
+
+        # print('Player 1:', game_state["players"][1]['x'], game_state["players"][1]['y'])
+        # print('Player 2:', game_state["players"][2]['x'], game_state["players"][2]['y'])
+        # print('Puck:', game_state["puck"]["x"], game_state["puck"]["y"])
+        # print("##################")
+        
         # Send transformed game state
         state_for_client = {
             "puck": {"x": puck_x, "y": puck_y},  # Send adjusted puck position
@@ -131,10 +133,10 @@ def start_server():
 
     print("Game started!")
 
-    # 🔹 **Start a separate thread to move the puck continuously**
+    # Start a separate thread to move the puck continuously**
     threading.Thread(target=move_puck_loop, daemon=True).start()
 
-    # 🔹 Keep the main thread running indefinitely
+    # Keep the main thread running indefinitely
     while True:
         time.sleep(1)  # Prevents CPU from running at 100% usage
 
@@ -144,7 +146,7 @@ def move_puck_loop():
     while not game.game_over:
         game.track_puck()  # Move the puck based on game physics
         send_game_state()  # Send updated puck position to clients
-        time.sleep(0.05)  # Limit update rate (100 FPS)
+        time.sleep(0.05)  # Limit update rate
 
 
 
