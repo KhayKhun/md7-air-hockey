@@ -166,7 +166,5 @@ def move_puck_loop():
         send_game_state()  # Send updated puck position to clients
         time.sleep(0.05)  # Limit update rate
 
-
-
 if __name__ == "__main__":
     start_server()
