@@ -4,11 +4,29 @@ import json
 import sys
 import os
 import time
+import logging
+from logging.handlers import RotatingFileHandler
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from v3.game_engine import GameEngine
 from shared.game_config import SCREEN_WIDTH, SCREEN_HEIGHT
 
+# Create 'log' folder if it doesn't exist
+log_folder = "log"
+os.makedirs(log_folder, exist_ok=True)  # Ensures the directory exists
+
+# Define log file path
+log_file = os.path.join(log_folder, "server.log")
+
+# Setup Rotating File Handler (1MB per log file, keeps last 5)
+log_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+log_handler = RotatingFileHandler(log_file, maxBytes=1_048_576, backupCount=5)
+log_handler.setFormatter(log_formatter)
+
+# Create logger
+logger = logging.getLogger("GameServer")
+logger.setLevel(logging.DEBUG)
+logger.addHandler(log_handler)
 
 HOST = '0.0.0.0'
 PORT = 21002
@@ -17,7 +35,6 @@ clients = {}  # Dictionary to store connected clients {addr: socket}
 players = {}  # Stores player assignment {addr: player_number}
 game = GameEngine()
 
-
 def handle_client(client_socket, addr):  # Own thread
     """ Handles incoming messages from clients and updates game state. """
     global clients, players, game
@@ -25,7 +42,7 @@ def handle_client(client_socket, addr):  # Own thread
     # Assign player ID (1 or 2)
     player_number = 1 if len(players) == 0 else 2
     players[addr] = player_number
-    print(f"Player {player_number} connected from {addr}")
+    logger.info(f"Player {player_number} connected from {addr}")
 
     # Send initial game state with player_id
     initial_state = game.get_state()
@@ -37,7 +54,9 @@ def handle_client(client_socket, addr):  # Own thread
         "opponent": initial_state["players"][2 if player_number == 1 else 1]
     }
     # Send directly to the new client
-    client_socket.send((json.dumps(initial_state) + "\n").encode())
+    response = (json.dumps(initial_state) + "\n").encode()
+    client_socket.send(response)
+    logger.info(f"Sent {response} to client: {addr}")
 
     buffer = ""
 
@@ -45,7 +64,7 @@ def handle_client(client_socket, addr):  # Own thread
         while True: # Listening to client
             data = client_socket.recv(1024).decode()
             if not data:
-                print("Client disconnected:", addr)
+                logger.info(f"Client disconnected: {addr}")
                 break
 
             buffer += data  # Append received data to buffer
@@ -65,12 +84,14 @@ def handle_client(client_socket, addr):  # Own thread
                     send_game_state()
 
                 except json.JSONDecodeError:
-                    print("Received invalid JSON:", json_data)
+                    logger.info("Received invalid JSON:", json_data)
+
 
             time.sleep(0.05)  # Reduce CPU usage
 
     except (ConnectionResetError, BrokenPipeError):
-        print(f"Player {player_id} disconnected.")
+        logger.error(f"Player {player_id} disconnected.")
+
 
     # Remove client from the game
     del clients[addr]
@@ -94,11 +115,6 @@ def send_game_state():
             puck_x = SCREEN_WIDTH - puck_x  # Left-right inversion
             puck_y = SCREEN_HEIGHT - puck_y  # Flip y-position
 
-        # print('Player 1:', game_state["players"][1]['x'], game_state["players"][1]['y'])
-        # print('Player 2:', game_state["players"][2]['x'], game_state["players"][2]['y'])
-        # print('Puck:', game_state["puck"]["x"], game_state["puck"]["y"])
-        # print("##################")
-        
         # Send transformed game state
         state_for_client = {
             "puck": {"x": puck_x, "y": puck_y},  # Send adjusted puck position
@@ -111,9 +127,11 @@ def send_game_state():
         }
 
         try:
-            client_socket.send((json.dumps(state_for_client) + "\n").encode())
+            response = (json.dumps(state_for_client) + "\n").encode()
+            client_socket.send(response)
+
         except:
-            print(f"Failed to send data to {addr}")
+            logger.error(f"Failed to send data to {addr}")
 
 
 
@@ -124,14 +142,14 @@ def start_server():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((HOST, PORT))
     server_socket.listen(2)  # Max 2 players
-    print(f"Server running on {HOST}:{PORT}")
+    logger.info(f"Server running on {HOST}:{PORT}")
 
     while len(clients) < 2:  # Wait for two players
         client_socket, addr = server_socket.accept()
         clients[addr] = client_socket
         threading.Thread(target=handle_client, args=(client_socket, addr), daemon=True).start()
 
-    print("Game started!")
+    logger.info("Game started!")
 
     # Start a separate thread to move the puck continuously**
     threading.Thread(target=move_puck_loop, daemon=True).start()
@@ -147,8 +165,6 @@ def move_puck_loop():
         game.track_puck()  # Move the puck based on game physics
         send_game_state()  # Send updated puck position to clients
         time.sleep(0.05)  # Limit update rate
-
-
 
 if __name__ == "__main__":
     start_server()

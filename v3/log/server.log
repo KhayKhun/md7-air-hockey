@@ -1,0 +1,7 @@
+2025-01-21 10:41:23,438 - INFO - Server running on 0.0.0.0:21002
+2025-01-21 10:41:52,146 - INFO - Server running on 0.0.0.0:21002
+2025-01-21 10:42:03,790 - INFO - Player 1 connected from ('127.0.0.1', 50784)
+2025-01-21 10:42:03,790 - INFO - Sent b'{"puck": {"x": 200, "y": 300, "dx": 5, "dy": 5}, "players": {"me": {"x": 100, "y": 300, "score": 0, "quit": false}, "opponent": {"x": 700, "y": 300, "score": 0, "quit": false}}, "time": 11.6, "game_over": false, "player_id": 1}\n' to client: ('127.0.0.1', 50784)
+2025-01-21 10:42:11,144 - INFO - Player 2 connected from ('127.0.0.1', 50786)
+2025-01-21 10:42:11,144 - INFO - Game started!
+2025-01-21 10:42:11,144 - INFO - Sent b'{"puck": {"x": 200, "y": 300, "dx": 5, "dy": 5}, "players": {"me": {"x": 700, "y": 300, "score": 0, "quit": false}, "opponent": {"x": 0, "y": 300, "score": 0, "quit": false}}, "time": 19.0, "game_over": false, "player_id": 2}\n' to client: ('127.0.0.1', 50786)
