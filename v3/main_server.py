@@ -131,7 +131,7 @@ def send_game_state():
             client_socket.send(response)
 
         except:
-            print(f"Failed to send data to {addr}")
+            logger.error(f"Failed to send data to {addr}")
 
 
 
@@ -142,14 +142,14 @@ def start_server():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((HOST, PORT))
     server_socket.listen(2)  # Max 2 players
-    print(f"Server running on {HOST}:{PORT}")
+    logger.info(f"Server running on {HOST}:{PORT}")
 
     while len(clients) < 2:  # Wait for two players
         client_socket, addr = server_socket.accept()
         clients[addr] = client_socket
         threading.Thread(target=handle_client, args=(client_socket, addr), daemon=True).start()
 
-    print("Game started!")
+    logger.info("Game started!")
 
     # Start a separate thread to move the puck continuously**
     threading.Thread(target=move_puck_loop, daemon=True).start()

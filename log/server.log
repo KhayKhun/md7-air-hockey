@@ -1,0 +1,16 @@
+2025-01-21 10:36:37,836 - INFO - Server running on 0.0.0.0:21002
+2025-01-21 10:36:48,631 - INFO - Player 1 connected from ('127.0.0.1', 53504)
+2025-01-21 10:36:48,631 - INFO - Sent b'{"puck": {"x": 200, "y": 300, "dx": 5, "dy": 5}, "players": {"me": {"x": 100, "y": 300, "score": 0, "quit": false}, "opponent": {"x": 700, "y": 300, "score": 0, "quit": false}}, "time": 10.8, "game_over": false, "player_id": 1}\n' to client: ('127.0.0.1', 53504)
+2025-01-21 10:37:46,259 - ERROR - Player 1 disconnected.
+2025-01-21 10:37:46,970 - INFO - Player 1 connected from ('127.0.0.1', 53509)
+2025-01-21 10:37:46,971 - INFO - Sent b'{"puck": {"x": 200, "y": 300, "dx": 5, "dy": 5}, "players": {"me": {"x": 399, "y": 301, "score": 0, "quit": false}, "opponent": {"x": 700, "y": 300, "score": 0, "quit": false}}, "time": 69.1, "game_over": false, "player_id": 1}\n' to client: ('127.0.0.1', 53509)
+2025-01-21 10:38:08,990 - ERROR - Failed to send data to ('127.0.0.1', 53509)
+2025-01-21 10:38:08,990 - ERROR - Failed to send data to ('127.0.0.1', 53509)
+2025-01-21 10:38:08,990 - ERROR - Failed to send data to ('127.0.0.1', 53509)
+2025-01-21 10:38:09,043 - ERROR - Player 1 disconnected.
+2025-01-21 10:38:16,261 - INFO - Server running on 0.0.0.0:21002
+2025-01-21 10:38:23,353 - INFO - Player 1 connected from ('127.0.0.1', 53512)
+2025-01-21 10:38:23,353 - INFO - Sent b'{"puck": {"x": 200, "y": 300, "dx": 5, "dy": 5}, "players": {"me": {"x": 100, "y": 300, "score": 0, "quit": false}, "opponent": {"x": 700, "y": 300, "score": 0, "quit": false}}, "time": 7.1, "game_over": false, "player_id": 1}\n' to client: ('127.0.0.1', 53512)
+2025-01-21 10:39:07,374 - ERROR - Failed to send data to ('127.0.0.1', 53512)
+2025-01-21 10:39:07,429 - ERROR - Player 1 disconnected.
+2025-01-21 10:40:16,116 - INFO - Server running on 0.0.0.0:21002
